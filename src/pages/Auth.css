@@ -1,0 +1,130 @@
+/* client/src/pages/Auth.css */
+/* -------------------------------------------------------------------- */
+/* Shared styles for Login.jsx and Signup.jsx                           */
+/* -------------------------------------------------------------------- */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff8e1; /* matches your app's warm yellow background */
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  padding: 24px;
+}
+
+.auth-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(255, 167, 38, 0.15);
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: #2d3748;
+}
+
+.auth-subtitle {
+  color: #718096;
+  margin: 0 0 24px;
+  font-size: 14px;
+}
+
+.input-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-group label {
+  font-weight: 600;
+  font-size: 13px;
+  color: #2d3748;
+}
+
+.input-group input {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.15s ease;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #ffa726;
+  box-shadow: 0 0 0 3px rgba(255, 167, 38, 0.15);
+}
+
+.auth-links-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.auth-link {
+  font-size: 13px;
+  color: #ffa726;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+.auth-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #ffa726, #ff7043);
+  color: white;
+  border: none;
+  padding: 13px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.15s ease;
+}
+
+.auth-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.auth-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #718096;
+}
+
+.auth-switch a {
+  color: #ffa726;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
+.error-box {
+  background: #ffebee;
+  border: 1px solid #ef9a9a;
+  color: #c62828;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
