@@ -7,7 +7,7 @@ import { useState, useEffect, useRef } from "react";
 import JobMatch from './pages/JobMatch';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import { BrowserRouter, Routes, Route, useNavigate, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate} from "react-router-dom";
 import ProtectedRoute from './components/ProtectedRoute';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -1791,7 +1791,7 @@ function Footer() {
         <div style={{display:"flex",flexDirection:"column",gap:12}}>
           <h4 style={{color:"#fff",fontWeight:700,marginBottom:4}}>Legal</h4>
           {["Privacy Policy","Terms of Service","Cookie Policy","Disclaimer"].map(l=>(
-            <a key={l} href="#" style={linkStyle}
+            <a key={l} href="/" style={linkStyle}
               onMouseEnter={e=>e.target.style.color="#FFD54F"}
               onMouseLeave={e=>e.target.style.color="#90A4AE"}>{l}</a>
           ))}
