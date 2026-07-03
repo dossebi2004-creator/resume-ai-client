@@ -13,6 +13,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import ResumeHistory from './pages/ResumeHistory';
 import AdminDashboard from './pages/AdminDashboard';
+import FAQSection from './components/FAQSection';
 import { ToastProvider } from './ToastContext';
 import NotFound from './pages/NotFound';
 import { useToast } from './ToastContext';
@@ -543,10 +544,10 @@ function Features() {
 // STATISTICS
 // ============================================================
 const STATS = [
-  {value:"1000+",label:"Resumes Analyzed",icon:"📄"},
-  {value:"95%",  label:"Matching Accuracy",icon:"🎯"},
-  {value:"24/7", label:"AI Available",     icon:"🤖"},
-  {value:"4.9★", label:"User Rating",      icon:"⭐"},
+  {value:"1500+",label:"Resume Analyses",icon:"📄"},
+  {value:"95%",  label:"Average ATS Score",icon:"🎯"},
+  {value:"500+", label:"Companies Supported",icon:"🏢"},
+  {value:"200+", label:"Daily Users",      icon:"👥"},
 ];
 
 function StatCard({stat,started}) {
@@ -1905,6 +1906,7 @@ function HomePage() {
       <UploadSection onUploadSuccess={() => setRefreshKey(k => k + 1)} />
       <UploadedResumes refreshTrigger={refreshKey} /> {/* Day 2 — Upload + Validation */}
       <Testimonials />    {/* 3 user testimonials */}
+      <FAQSection />      {/* NEW: Frequently Asked Questions */}
       <CTABanner />       {/* Call to action */}
       <Footer />          {/* Footer with links */}
     </div>
