@@ -633,6 +633,7 @@ function UploadSection() {
     setServerData(null);
     if (!validate(selected)) { setFile(null); return; }
     setFile(selected);
+    handleUpload(selected);
   }
 
   // ── DRAG EVENTS ────────────────────────────────────────────
@@ -645,10 +646,10 @@ function UploadSection() {
   };
 
   // ── HANDLE UPLOAD — sends file to backend API ──────────────
-  async function handleUpload() {
+  async function handleUpload(fileToUpload = file) {
 
     // Guard: must have a file
-    if (!file) {
+    if (!fileToUpload) {
       setError("⚠️ Please select a file before uploading.");
       return;
     }
@@ -676,7 +677,7 @@ function UploadSection() {
       const formData = new FormData();
 
       // "resume" must match upload.single("resume") in upload.js
-      formData.append("resume", file);
+      formData.append("resume", fileToUpload);
 
       // ── fetch() — sends HTTP POST to our Express server ────
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/upload`, {
@@ -892,16 +893,7 @@ function UploadSection() {
 
         {/* ── ACTION BUTTONS ── */}
         {file && (
-          <div className="act-btns" style={{display:"flex",gap:"1rem",flexWrap:"wrap",animation:"fadeUp 0.5s ease both"}}>
-            <button
-              style={{flex:1,background:"linear-gradient(135deg,#FFA726,#FF7043)",color:"#fff",border:"none",padding:"13px 28px",borderRadius:40,fontFamily:"Poppins",fontWeight:700,fontSize:"0.95rem",cursor:(uploading||success)?"not-allowed":"pointer",opacity:(uploading||success)?0.65:1,transition:"all 0.25s",boxShadow:"0 6px 20px rgba(255,112,67,0.35)"}}
-              onClick={handleUpload}
-              disabled={uploading || success}
-              onMouseEnter={e=>{if(!uploading&&!success)e.target.style.transform="translateY(-2px) scale(1.03)"}}
-              onMouseLeave={e=>e.target.style.transform="translateY(0) scale(1)"}>
-              {uploading ? "⏳ Uploading to Server…" : success ? "✅ Uploaded!" : "🚀 Upload to Server"}
-            </button>
-
+          <div className="act-btns" style={{display:"flex",gap:"1rem",flexWrap:"wrap",animation:"fadeUp 0.5s ease both"}}>          
             <button
               style={{background:"transparent",color:"#0288D1",border:"2px solid #4FC3F7",padding:"11px 24px",borderRadius:40,fontFamily:"Poppins",fontWeight:600,fontSize:"0.9rem",cursor:"pointer",transition:"all 0.25s"}}
               onClick={handleRemove}
