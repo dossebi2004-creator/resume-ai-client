@@ -10,12 +10,14 @@ import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import './Auth.css';
+import { useToast } from '../ToastContext';
 
 export default function ResetPassword() {
   // Pulls the token out of the URL — matches the :token part of the
   // route we'll register in App.js as /reset-password/:token
   const { token } = useParams();
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -50,16 +52,20 @@ export default function ResetPassword() {
 
       if (response.data.success) {
         setSuccess(true);
+        showToast('Password reset successful! ✅', 'success');
         // Give them a moment to read the success message, then send to login
         setTimeout(() => navigate('/login'), 2500);
       } else {
-        setError(response.data.message || 'Reset failed. The link may have expired.');
+        const message = response.data.message || 'Reset failed. The link may have expired.';
+        setError(message);
+        showToast(message, 'error');
       }
     } catch (err) {
       const message =
         err.response?.data?.message ||
         'This reset link is invalid or has expired. Please request a new one.';
       setError(message);
+      showToast(message, 'error');
     } finally {
       setLoading(false);
     }

@@ -9,9 +9,11 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import './Auth.css';
+import { useToast } from '../ToastContext';
 
 export default function Login() {
-  const navigate = useNavigate(); // lets us redirect after a successful login
+  const navigate = useNavigate();
+  const { showToast } = useToast(); // lets us redirect after a successful login
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -41,16 +43,21 @@ export default function Login() {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
 
+        showToast('Welcome back! Login successful 🎉', 'success');
+
         // Send them to the homepage (or wherever makes sense once
         // we build a dashboard)
         navigate('/');
       } else {
-        setError(response.data.message || 'Login failed. Please try again.');
+        const message = response.data.message || 'Login failed. Please try again.';
+        setError(message);
+        showToast(message, 'error');
       }
     } catch (err) {
       const message =
         err.response?.data?.message || 'Something went wrong. Please try again.';
       setError(message);
+      showToast(message, 'error');
     } finally {
       setLoading(false);
     }

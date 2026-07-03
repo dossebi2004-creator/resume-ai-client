@@ -9,6 +9,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './ResumeHistory.css';
+import { useToast } from '../ToastContext';
 
 function getScore(resume) {
   return resume?.aiAnalysis?.resumeScore ?? null;
@@ -28,6 +29,7 @@ function formatDate(dateString) {
 }
 
 export default function ResumeHistory() {
+  const { showToast } = useToast();
   const [resumes, setResumes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -85,7 +87,7 @@ export default function ResumeHistory() {
       link.click();
       link.remove();
     } catch (err) {
-      alert('Failed to download the PDF report. Please try again.');
+      showToast('Failed to download the PDF report. Please try again.', 'error');
       console.error('PDF download error:', err);
     }
   };
@@ -109,11 +111,16 @@ export default function ResumeHistory() {
 
       if (response.data.success) {
         setEmailMessage('✅ Report sent successfully! Check the inbox.');
+        showToast('Report emailed successfully! 📧', 'success');
       } else {
-        setEmailMessage(response.data.message || 'Failed to send.');
+        const message = response.data.message || 'Failed to send.';
+        setEmailMessage(message);
+        showToast(message, 'error');
       }
     } catch (err) {
-      setEmailMessage(err.response?.data?.message || 'Failed to send. Please try again.');
+      const message = err.response?.data?.message || 'Failed to send. Please try again.';
+      setEmailMessage(message);
+      showToast(message, 'error');
     } finally {
       setEmailSending(false);
     }

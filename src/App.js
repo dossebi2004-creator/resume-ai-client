@@ -13,7 +13,9 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import ResumeHistory from './pages/ResumeHistory';
 import AdminDashboard from './pages/AdminDashboard';
+import { ToastProvider } from './ToastContext';
 import NotFound from './pages/NotFound';
+import { useToast } from './ToastContext';
 // ── Google Font (Poppins) ────────────────────────────────────
 const fontLink = document.createElement("link");
 fontLink.rel = "stylesheet";
@@ -596,6 +598,7 @@ function getFileIcon(type) {
 // UPLOAD SECTION COMPONENT
 // ============================================================
 function UploadSection() {
+  const { showToast } = useToast();
 
   // ── STATE ──────────────────────────────────────────────────
   const [file,       setFile]       = useState(null);   // selected file
@@ -701,16 +704,20 @@ function UploadSection() {
       const data = await response.json();
 
       // ── Handle server response ──────────────────────────────
+      // ── Handle server response ──────────────────────────────
       if (data.success) {
         // Jump to 100% on success
         setProgress(100);
         setSuccess(true);
         setServerData(data); // store server response to display details
+        showToast('Resume uploaded and analyzed successfully! 🚀', 'success');
         console.log("✅ Upload success:", data);
       } else {
         // Server rejected the file (wrong type, too large, etc.)
         setProgress(0);
-        setError(data.message || "❌ Upload failed. Please try again.");
+        const message = data.message || "❌ Upload failed. Please try again.";
+        setError(message);
+        showToast(message, 'error');
         console.error("❌ Upload failed:", data.message);
       }
 
@@ -718,7 +725,9 @@ function UploadSection() {
       // Network error — server might be offline
       clearInterval(timer);
       setProgress(0);
-      setError("❌ Cannot connect to server. Make sure the backend is running on port 5000.");
+      const message = "❌ Cannot connect to server. Make sure the backend is running on port 5000.";
+      setError(message);
+      showToast(message, 'error');
       console.error("🔴 Network error:", err);
     } finally {
       // Always stop the uploading spinner
@@ -1831,6 +1840,7 @@ function HomePage() {
 // =========================================================================
 export default function App() {
   return (
+  <ToastProvider>
     <BrowserRouter>
       <Routes>
   <Route path="/" element={<HomePage />} />
@@ -1856,5 +1866,6 @@ export default function App() {
    <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
+  </ToastProvider>
   );
 }

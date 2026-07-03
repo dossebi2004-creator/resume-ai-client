@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './JobMatch.css';
+import { useToast } from '../ToastContext';
 
 function ScoreRing({ score, label }) {
   const radius = 54;
@@ -64,6 +65,7 @@ function BulletList({ items }) {
 }
 
 export default function JobMatch({ resumeId: resumeIdProp }) {
+  const { showToast } = useToast();
   const [resumeId, setResumeId] = useState(resumeIdProp || '');
   const [jobDescription, setJobDescription] = useState('');
   const [loading, setLoading] = useState(false);
@@ -92,12 +94,16 @@ export default function JobMatch({ resumeId: resumeIdProp }) {
 
       if (response.data.success) {
         setResult(response.data.data);
+        showToast('Job match analysis complete! 🎯', 'success');
       } else {
-        setError(response.data.message || 'Analysis failed. Please try again.');
+        const message = response.data.message || 'Analysis failed. Please try again.';
+        setError(message);
+        showToast(message, 'error');
       }
     } catch (err) {
       const message = err.response?.data?.message || 'Something went wrong while analyzing. Please try again.';
       setError(message);
+      showToast(message, 'error');
     } finally {
       setLoading(false);
     }

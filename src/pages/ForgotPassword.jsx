@@ -9,8 +9,10 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './Auth.css';
+import { useToast } from '../ToastContext';
 
 export default function ForgotPassword() {
+  const { showToast } = useToast();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -35,13 +37,17 @@ export default function ForgotPassword() {
 
       if (response.data.success) {
         setSent(true); // show the "check your email" message
+        showToast('Reset link sent! Check your inbox 📩', 'success');
       } else {
-        setError(response.data.message || 'Something went wrong. Please try again.');
+        const message = response.data.message || 'Something went wrong. Please try again.';
+        setError(message);
+        showToast(message, 'error');
       }
     } catch (err) {
       const message =
         err.response?.data?.message || 'Something went wrong. Please try again.';
       setError(message);
+      showToast(message, 'error');
     } finally {
       setLoading(false);
     }

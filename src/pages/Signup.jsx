@@ -8,10 +8,11 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import './Auth.css';
+import { useToast } from '../ToastContext';
 
 export default function Signup() {
   const navigate = useNavigate();
-
+  const { showToast } = useToast();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -50,14 +51,18 @@ export default function Signup() {
         // log the user in right away without a separate login step.
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
+        showToast('Account created! Welcome to ResumeAI 🎉', 'success');
         navigate('/');
       } else {
-        setError(response.data.message || 'Signup failed. Please try again.');
+        const message = response.data.message || 'Signup failed. Please try again.';
+        setError(message);
+        showToast(message, 'error');
       }
     } catch (err) {
       const message =
         err.response?.data?.message || 'Something went wrong. Please try again.';
       setError(message);
+      showToast(message, 'error');
     } finally {
       setLoading(false);
     }
