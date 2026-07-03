@@ -110,7 +110,7 @@ export default function JobMatch({ resumeId: resumeIdProp }) {
   };
 
   return (
-    <div className="jobmatch-page">
+    <div className="jobmatch-page page-fade-in">
       <h1 className="jobmatch-title">🎯 Job Match Analyzer</h1>
       <p className="jobmatch-subtitle">Paste a job description below to see how well your resume matches it.</p>
 

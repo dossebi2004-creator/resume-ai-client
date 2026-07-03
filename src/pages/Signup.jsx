@@ -69,7 +69,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="auth-page">
+    <div className="auth-page page-fade-in">
       <form className="auth-card" onSubmit={handleSubmit}>
         <h1 className="auth-title">Create your account</h1>
         <p className="auth-subtitle">Join ResumeAI to get started.</p>

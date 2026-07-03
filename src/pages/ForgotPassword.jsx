@@ -56,7 +56,7 @@ export default function ForgotPassword() {
   // --- After a successful submit, show a confirmation instead of the form ---
   if (sent) {
     return (
-      <div className="auth-page">
+      <div className="auth-page page-fade-in">
         <div className="auth-card">
           <h1 className="auth-title">Check your email 📩</h1>
           <p className="auth-subtitle">
@@ -71,7 +71,7 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="auth-page">
+    <div className="auth-page page-fade-in">
       <form className="auth-card" onSubmit={handleSubmit}>
         <h1 className="auth-title">Forgot your password?</h1>
         <p className="auth-subtitle">

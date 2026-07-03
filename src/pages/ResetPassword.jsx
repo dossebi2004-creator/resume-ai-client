@@ -73,7 +73,7 @@ export default function ResetPassword() {
 
   if (success) {
     return (
-      <div className="auth-page">
+      <div className="auth-page page-fade-in">
         <div className="auth-card">
           <h1 className="auth-title">Password reset ✅</h1>
           <p className="auth-subtitle">
@@ -85,7 +85,7 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="auth-page">
+    <div className="auth-page page-fade-in">
       <form className="auth-card" onSubmit={handleSubmit}>
         <h1 className="auth-title">Reset your password</h1>
         <p className="auth-subtitle">Enter a new password for your account.</p>

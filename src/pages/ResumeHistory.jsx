@@ -127,7 +127,7 @@ export default function ResumeHistory() {
   };
 
   return (
-    <div className="history-page">
+    <div className="history-page page-fade-in">
       <h1 className="history-title">📈 Resume Version History</h1>
       <p className="history-subtitle">
         Track how your resume has improved across every version you've uploaded.

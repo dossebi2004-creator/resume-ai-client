@@ -27,7 +27,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'users' | 'resumes'
 
   return (
-    <div className="admin-page">
+    <div className="admin-page page-fade-in">
       <h1 className="admin-title">🛠️ Admin Dashboard</h1>
 
       <div className="admin-tabs">

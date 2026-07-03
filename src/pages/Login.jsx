@@ -64,7 +64,7 @@ export default function Login() {
   };
 
   return (
-    <div className="auth-page">
+    <div className="auth-page page-fade-in">
       <form className="auth-card" onSubmit={handleSubmit}>
         <h1 className="auth-title">Welcome back</h1>
         <p className="auth-subtitle">Log in to continue to ResumeAI.</p>

@@ -7,7 +7,7 @@ import { useState, useEffect, useRef } from "react";
 import JobMatch from './pages/JobMatch';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import { BrowserRouter, Routes, Route, useNavigate} from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate,Link} from "react-router-dom";
 import ProtectedRoute from './components/ProtectedRoute';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -106,6 +106,15 @@ const css = `
   @keyframes slideDown {
     from { opacity:0; transform:translateY(-10px); }
     to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* Page fade-in on route change */
+  .page-fade-in {
+    animation: pageFadeIn 0.4s ease both;
+  }
+  @keyframes pageFadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   @media(max-width:768px){
@@ -253,6 +262,33 @@ const handleLogout = () => {
               {l}
             </a>
           ))}
+
+          {/* NEW: links only visible when logged in */}
+          {user && (
+            <>
+              <Link to="/history"
+                style={{color:"#2D3748",fontWeight:500,fontSize:"0.92rem",textDecoration:"none",padding:"6px 14px",borderRadius:30,transition:"all 0.25s"}}
+                onMouseEnter={e=>{e.target.style.background="rgba(255,213,79,0.25)";e.target.style.color="#FFA726"}}
+                onMouseLeave={e=>{e.target.style.background="transparent";e.target.style.color="#2D3748"}}>
+                History
+              </Link>
+              <Link to="/job-match"
+                style={{color:"#2D3748",fontWeight:500,fontSize:"0.92rem",textDecoration:"none",padding:"6px 14px",borderRadius:30,transition:"all 0.25s"}}
+                onMouseEnter={e=>{e.target.style.background="rgba(255,213,79,0.25)";e.target.style.color="#FFA726"}}
+                onMouseLeave={e=>{e.target.style.background="transparent";e.target.style.color="#2D3748"}}>
+                Job Match
+              </Link>
+              {user.role === 'admin' && (
+                <Link to="/admin"
+                  style={{color:"#2D3748",fontWeight:500,fontSize:"0.92rem",textDecoration:"none",padding:"6px 14px",borderRadius:30,transition:"all 0.25s"}}
+                  onMouseEnter={e=>{e.target.style.background="rgba(255,213,79,0.25)";e.target.style.color="#FFA726"}}
+                  onMouseLeave={e=>{e.target.style.background="transparent";e.target.style.color="#2D3748"}}>
+                  Admin
+                </Link>
+              )}
+            </>
+          )}
+
           {user ? (
   <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
     <span style={{ fontWeight: 600, color: "#2D3748" }}>
