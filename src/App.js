@@ -329,7 +329,38 @@ const handleLogout = () => {
               {l}
             </a>
           ))}
-          <button style={{...T.btnPrimary,marginTop:8}}>Login</button>
+
+          {user && (
+            <>
+              <Link to="/history" onClick={()=>setMenuOpen(false)}
+                style={{color:"#2D3748",fontWeight:500,padding:"10px 0",borderBottom:"1px solid #FFE082",textDecoration:"none"}}>
+                History
+              </Link>
+              <Link to="/job-match" onClick={()=>setMenuOpen(false)}
+                style={{color:"#2D3748",fontWeight:500,padding:"10px 0",borderBottom:"1px solid #FFE082",textDecoration:"none"}}>
+                Job Match
+              </Link>
+              {user.role === 'admin' && (
+                <Link to="/admin" onClick={()=>setMenuOpen(false)}
+                  style={{color:"#2D3748",fontWeight:500,padding:"10px 0",borderBottom:"1px solid #FFE082",textDecoration:"none"}}>
+                  Admin
+                </Link>
+              )}
+            </>
+          )}
+
+          {user ? (
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:8}}>
+              <span style={{fontWeight:600,color:"#2D3748"}}>Hi, {user.name.split(' ')[0]}</span>
+              <button style={T.btnPrimary} onClick={()=>{handleLogout();setMenuOpen(false)}}>
+                Logout
+              </button>
+            </div>
+          ) : (
+            <button style={{...T.btnPrimary,marginTop:8}} onClick={()=>{navigate('/login');setMenuOpen(false)}}>
+              Login
+            </button>
+          )}
         </div>
       )}
     </nav>
@@ -633,7 +664,7 @@ function getFileIcon(type) {
 // ============================================================
 // UPLOAD SECTION COMPONENT
 // ============================================================
-function UploadSection() {
+function UploadSection({ onUploadSuccess }) {
   const { showToast } = useToast();
 
   // ── STATE ──────────────────────────────────────────────────
@@ -748,6 +779,7 @@ function UploadSection() {
         setServerData(data); // store server response to display details
         showToast('Resume uploaded and analyzed successfully! 🚀', 'success');
         console.log("✅ Upload success:", data);
+        if (onUploadSuccess) onUploadSuccess(); // tell the list to refresh
       } else {
         // Server rejected the file (wrong type, too large, etc.)
         setProgress(0);
@@ -1002,12 +1034,15 @@ function UploadSection() {
   useEffect(() => {
     if (!resumeId) return;
 
-    async function fetchResume() {
+    async function fetchResumes() {
       try {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/resume/${resumeId}`);
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/my-resumes`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const data = await response.json();
 
         if (data.success) {
@@ -1024,7 +1059,7 @@ function UploadSection() {
       }
     }
 
-    fetchResume();
+    fetchResumes();
   }, [resumeId]);
 
   function getTypeIcon(mime) {
@@ -1522,7 +1557,7 @@ function listItemStyle(color) {
 //   - Renders <AIAnalysisDashboard /> alongside <ResumePreview />
 // ============================================================
 
-function UploadedResumes() {
+function UploadedResumes({ refreshTrigger }) {
 
   // ── STATE ──────────────────────────────────────────────────
   const [resumes, setResumes]     = useState([]);
@@ -1542,7 +1577,10 @@ function UploadedResumes() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/resumes`);
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/my-resumes`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const data = await response.json();
 
         if (data.success) {
@@ -1560,7 +1598,7 @@ function UploadedResumes() {
     }
 
     fetchResumes();
-  }, []);
+  }, [refreshTrigger]);
 
   // ── HELPERS ────────────────────────────────────────────────
   function formatDate(dateString) {
@@ -1837,8 +1875,8 @@ function Footer() {
         {/* Contact */}
         <div style={{display:"flex",flexDirection:"column",gap:12}}>
           <h4 style={{color:"#fff",fontWeight:700,marginBottom:4}}>Contact</h4>
-          <span style={{fontSize:"0.88rem"}}>📧 hello@resumeai.in</span>
-          <span style={{fontSize:"0.88rem"}}>📞 +91 98765 43210</span>
+          <span style={{fontSize:"0.88rem"}}>📧 dossebi2004@gmail.com</span>
+          <span style={{fontSize:"0.88rem"}}>📞 +91 95978 27680</span>
           <span style={{fontSize:"0.88rem"}}>📍 Puducherry, India</span>
           <div style={{marginTop:10,background:"rgba(129,199,132,0.2)",border:"1px solid #81C784",borderRadius:20,padding:"5px 14px",fontSize:"0.76rem",color:"#81C784",fontWeight:600,display:"inline-block"}}>
             🟢 AI Online 24/7
@@ -1855,14 +1893,17 @@ function Footer() {
 // HOMEPAGE — your existing landing page, now its own component
 // =========================================================================
 function HomePage() {
+  // Bumping this number tells UploadedResumes to refetch the list
+  const [refreshKey, setRefreshKey] = useState(0);
+
   return (
     <div>
       <Navbar />         {/* Fixed top navigation */}
       <Hero />            {/* Landing hero with illustration */}
       <Features />        {/* 4 feature cards */}
       <Statistics />      {/* Animated counters */}
-      <UploadSection />
-      <UploadedResumes /> {/* Day 2 — Upload + Validation */}
+      <UploadSection onUploadSuccess={() => setRefreshKey(k => k + 1)} />
+      <UploadedResumes refreshTrigger={refreshKey} /> {/* Day 2 — Upload + Validation */}
       <Testimonials />    {/* 3 user testimonials */}
       <CTABanner />       {/* Call to action */}
       <Footer />          {/* Footer with links */}
