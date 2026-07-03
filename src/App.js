@@ -13,6 +13,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import ResumeHistory from './pages/ResumeHistory';
 import AdminDashboard from './pages/AdminDashboard';
+import NotFound from './pages/NotFound';
 // ── Google Font (Poppins) ────────────────────────────────────
 const fontLink = document.createElement("link");
 fontLink.rel = "stylesheet";
@@ -1852,6 +1853,7 @@ export default function App() {
     <AdminDashboard />
   </ProtectedRoute>
 } />   
+   <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
