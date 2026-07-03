@@ -218,6 +218,7 @@ function UsersTab() {
 
       {!loading && !error && (
         <>
+          <div className="admin-table-wrapper">
           <table className="admin-table">
             <thead>
               <tr>
@@ -248,7 +249,7 @@ function UsersTab() {
               )}
             </tbody>
           </table>
-
+        </div>
           <Pagination page={page} totalPages={totalPages} onChange={setPage} />
         </>
       )}
@@ -317,6 +318,7 @@ function ResumesTab() {
 
       {!loading && !error && (
         <>
+        <div className="admin-table-wrapper">
           <table className="admin-table">
             <thead>
               <tr>
@@ -349,7 +351,7 @@ function ResumesTab() {
               )}
             </tbody>
           </table>
-
+        </div>
           <Pagination page={page} totalPages={totalPages} onChange={setPage} />
         </>
       )}

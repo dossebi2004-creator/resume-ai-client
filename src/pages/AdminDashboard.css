@@ -157,13 +157,21 @@
   box-sizing: border-box;
 }
 
+.admin-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(255, 167, 38, 0.08);
+}
+
 .admin-table {
   width: 100%;
+  min-width: 600px;
   border-collapse: collapse;
   background: white;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(255, 167, 38, 0.08);
 }
 
 .admin-table th {
