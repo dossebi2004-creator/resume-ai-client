@@ -1028,66 +1028,7 @@ function UploadSection({ onUploadSuccess }) {
           />
         )}
 
-        {/* ── STEP-BASED LOADING (NEW) ── */}
-        {uploading && (
-          <LoadingState
-            steps={["Uploading file", "Extracting text", "Running AI analysis"]}
-            currentStep={
-              progress < 35 ? 0 :
-              progress < 70 ? 1 : 2
-            }
-            theme="warm"
-          />
-        )}
-
-        {/* ── STEP-BASED LOADING (NEW) ── */}
-        {uploading && (
-          <LoadingState
-            steps={["Uploading file", "Extracting text", "Running AI analysis"]}
-            currentStep={
-              progress < 35 ? 0 :
-              progress < 70 ? 1 : 2
-            }
-            theme="warm"
-          />
-        )}
-
-        {/* ── STEP-BASED LOADING (NEW) ── */}
-        {uploading && (
-          <LoadingState
-            steps={["Uploading file", "Extracting text", "Running AI analysis"]}
-            currentStep={
-              progress < 35 ? 0 :
-              progress < 70 ? 1 : 2
-            }
-            theme="warm"
-          />
-        )}
-
-        {/* ── STEP-BASED LOADING (NEW) ── */}
-        {uploading && (
-          <LoadingState
-            steps={["Uploading file", "Extracting text", "Running AI analysis"]}
-            currentStep={
-              progress < 35 ? 0 :
-              progress < 70 ? 1 : 2
-            }
-            theme="warm"
-          />
-        )}
-
-        {/* ── STEP-BASED LOADING (NEW) ── */}
-        {uploading && (
-          <LoadingState
-            steps={["Uploading file", "Extracting text", "Running AI analysis"]}
-            currentStep={
-              progress < 35 ? 0 :
-              progress < 70 ? 1 : 2
-            }
-            theme="warm"
-          />
-        )}
-
+        
         {/* ── PROGRESS BAR ── */}
         {file && progress > 0 && (
           <div style={{animation:"fadeUp 0.4s ease both"}}>
