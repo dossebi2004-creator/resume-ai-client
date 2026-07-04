@@ -112,7 +112,7 @@ export default function ResetPassword() {
           />
         </div>
 
-        {error && <div className="error-box">⚠️ {error}</div>}
+        
 
         <button className="auth-btn" type="submit" disabled={loading}>
           {loading ? 'Resetting...' : 'Reset Password'}

@@ -97,7 +97,7 @@ export default function Login() {
           </Link>
         </div>
 
-        {error && <div className="error-box">⚠️ {error}</div>}
+        
 
         <button className="auth-btn" type="submit" disabled={loading}>
           {loading ? 'Logging in...' : 'Log In'}

@@ -214,7 +214,7 @@ function UsersTab() {
       />
 
       {loading && <div className="admin-loading">Loading users...</div>}
-      {error && !loading && <div className="admin-error">⚠️ {error}</div>}
+      
 
       {!loading && !error && (
         <>

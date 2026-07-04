@@ -231,7 +231,7 @@ export default function JobMatch({ resumeId: resumeIdProp }) {
         </div>
       )}
 
-      {error && <div className="error-box">⚠️ {error}</div>}
+      
 
       {result && !loading && (
         <div className="results-dashboard">

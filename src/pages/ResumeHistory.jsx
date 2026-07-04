@@ -140,7 +140,7 @@ export default function ResumeHistory() {
         </div>
       )}
 
-      {error && !loading && <div className="error-box">⚠️ {error}</div>}
+      
 
       {!loading && !error && resumes.length === 0 && (
         <div className="empty-state">

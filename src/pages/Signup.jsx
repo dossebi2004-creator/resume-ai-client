@@ -118,7 +118,7 @@ export default function Signup() {
           />
         </div>
 
-        {error && <div className="error-box">⚠️ {error}</div>}
+        
 
         <button className="auth-btn" type="submit" disabled={loading}>
           {loading ? 'Creating account...' : 'Sign Up'}
