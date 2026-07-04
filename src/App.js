@@ -17,6 +17,7 @@ import FAQSection from './components/FAQSection';
 import { ToastProvider } from './ToastContext';
 import NotFound from './pages/NotFound';
 import { useToast } from './ToastContext';
+import InstallGate from './InstallGate';
 import LoadingState from './components/LoadingState';
 // ── Google Font (Poppins) ────────────────────────────────────
 const fontLink = document.createElement("link");
@@ -2130,6 +2131,7 @@ function HomePage() {
 // =========================================================================
 export default function App() {
   return (
+    <InstallGate>
   <ToastProvider>
     <BrowserRouter>
       <Routes>
@@ -2157,5 +2159,6 @@ export default function App() {
       </Routes>
     </BrowserRouter>
   </ToastProvider>
+  </InstallGate>
   );
 }
