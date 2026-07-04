@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import './JobMatch.css';
 import { useToast } from '../ToastContext';
@@ -66,18 +66,86 @@ function BulletList({ items }) {
 
 export default function JobMatch({ resumeId: resumeIdProp }) {
   const { showToast } = useToast();
-  const [resumeId, setResumeId] = useState(resumeIdProp || '');
+
+  const [resumes, setResumes] = useState([]);
+  const [resumesLoading, setResumesLoading] = useState(!resumeIdProp);
+  const [resumesError, setResumesError] = useState('');
+  const [selectedResumeId, setSelectedResumeId] = useState(resumeIdProp || '');
+
   const [jobDescription, setJobDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState(null);
 
+  const fetchResumes = useCallback(async ({ silent } = {}) => {
+    if (resumeIdProp) return; // Skip fetching if a resumeId was passed in directly
+
+    if (!silent) setResumesLoading(true);
+    setResumesError('');
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/my-resumes`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.data.success) {
+        const list = response.data.data || [];
+        // Backend already sorts oldest -> newest by versionNumber; we want newest first
+        const sorted = [...list].sort((a, b) => b.versionNumber - a.versionNumber);
+        setResumes(sorted);
+
+        setSelectedResumeId((prevSelected) => {
+          // Keep the current selection if it still exists in the refreshed list,
+          // otherwise default to the newest resume.
+          const stillExists = sorted.some((r) => r._id === prevSelected);
+          if (stillExists) return prevSelected;
+          return sorted.length > 0 ? sorted[0]._id : '';
+        });
+
+        if (sorted.length === 0) {
+          setResumesError('No resumes found. Please upload a resume first.');
+        }
+      } else {
+        setResumesError(response.data.message || 'Could not load your resumes.');
+      }
+    } catch (err) {
+      const message = err.response?.data?.message || 'Could not load your resumes. Please try again.';
+      setResumesError(message);
+      if (!silent) showToast(message, 'error');
+    } finally {
+      if (!silent) setResumesLoading(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resumeIdProp]);
+
+  // Fetch on mount
+  useEffect(() => {
+    fetchResumes();
+  }, [fetchResumes]);
+
+  // Re-fetch (silently, no spinner) whenever the tab/window regains focus —
+  // covers the case where a resume was uploaded on another tab/page and the
+  // user switches back here without a full reload.
+  useEffect(() => {
+    if (resumeIdProp) return;
+
+    const handleFocus = () => fetchResumes({ silent: true });
+    window.addEventListener('focus', handleFocus);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') fetchResumes({ silent: true });
+    });
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [fetchResumes, resumeIdProp]);
+
   const handleAnalyze = async () => {
     setError('');
     setResult(null);
 
-    if (!resumeId.trim()) {
-      setError('Please provide a resume ID (upload a resume first).');
+    if (!selectedResumeId) {
+      setError('Please select a resume first.');
       return;
     }
     if (jobDescription.trim().length < 30) {
@@ -88,7 +156,7 @@ export default function JobMatch({ resumeId: resumeIdProp }) {
     setLoading(true);
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/job-match`, {
-        resumeId: resumeId.trim(),
+        resumeId: selectedResumeId,
         jobDescription: jobDescription.trim(),
       });
 
@@ -116,14 +184,24 @@ export default function JobMatch({ resumeId: resumeIdProp }) {
 
       {!resumeIdProp && (
         <div className="input-group">
-          <label htmlFor="resumeId">Resume ID</label>
-          <input
-            id="resumeId"
-            type="text"
-            value={resumeId}
-            onChange={(e) => setResumeId(e.target.value)}
-            placeholder="Paste the resume's MongoDB _id here"
-          />
+          <label htmlFor="resumeSelect">Select Resume</label>
+          {resumesLoading ? (
+            <p className="empty-note">Loading your resumes...</p>
+          ) : resumesError ? (
+            <div className="error-box">⚠️ {resumesError}</div>
+          ) : (
+            <select
+              id="resumeSelect"
+              value={selectedResumeId}
+              onChange={(e) => setSelectedResumeId(e.target.value)}
+            >
+              {resumes.map((resume) => (
+                <option key={resume._id} value={resume._id}>
+                  {resume.fileName} (v{resume.versionNumber})
+                </option>
+              ))}
+            </select>
+          )}
         </div>
       )}
 
@@ -138,7 +216,11 @@ export default function JobMatch({ resumeId: resumeIdProp }) {
         />
       </div>
 
-      <button className="analyze-btn" onClick={handleAnalyze} disabled={loading}>
+      <button
+        className="analyze-btn"
+        onClick={handleAnalyze}
+        disabled={loading || resumesLoading || !selectedResumeId}
+      >
         {loading ? 'Analyzing...' : 'Analyze Job Match'}
       </button>
 
@@ -189,17 +271,17 @@ export default function JobMatch({ resumeId: resumeIdProp }) {
 
           <div className="card">
             <h3>🛠️ Recommended Improvements</h3>
-            <BulletList items={result.recommendations?.improvements} />
+            <BulletList items={result.recommendedImprovements} />
           </div>
 
           <div className="grid-2col">
             <div className="card">
               <h3>📚 Suggested Courses</h3>
-              <BulletList items={result.recommendations?.courses} />
+              <BulletList items={result.recommendedCourses} />
             </div>
             <div className="card">
               <h3>🚀 Suggested Projects</h3>
-              <BulletList items={result.recommendations?.projects} />
+              <BulletList items={result.recommendedProjects} />
             </div>
           </div>
         </div>

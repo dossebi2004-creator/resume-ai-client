@@ -17,6 +17,7 @@ import FAQSection from './components/FAQSection';
 import { ToastProvider } from './ToastContext';
 import NotFound from './pages/NotFound';
 import { useToast } from './ToastContext';
+import LoadingState from './components/LoadingState';
 // ── Google Font (Poppins) ────────────────────────────────────
 const fontLink = document.createElement("link");
 fontLink.rel = "stylesheet";
@@ -250,7 +251,7 @@ const handleLogout = () => {
       <div style={{maxWidth:1200,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between",height:66}}>
         {/* Logo */}
         <span style={{fontSize:"1.45rem",fontWeight:900,background:"linear-gradient(135deg,#FFA726,#4FC3F7)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",cursor:"pointer"}}>
-          ✦ ResumeAI
+          ✦ DOSS&CO 
         </span>
 
         {/* Desktop links */}
@@ -581,38 +582,108 @@ function Statistics() {
 // TESTIMONIALS
 // ============================================================
 const TESTIMONIALS = [
-  {name:"Priya Sharma", role:"Software Engineer @ Google",  avatar:"👩‍💻",bg:"#FFF3E0",quote:"ResumeAI helped me land my dream job at Google! The skill extraction was spot-on and the suggestions were incredibly actionable."},
+  {name:"Priya Sharma", role:"Software Engineer @ Google",  avatar:"👩‍💻",bg:"#FFF3E0",quote:"✦ DOSS&CO helped me land my dream job at Google! The skill extraction was spot-on and the suggestions were incredibly actionable."},
   {name:"Arjun Mehta",  role:"Data Scientist @ Amazon",     avatar:"👨‍🔬",bg:"#E1F5FE",quote:"I was amazed at how accurately it matched my resume to job descriptions. Got 3 interview calls within a week!"},
   {name:"Sneha Patel",  role:"Product Manager @ Flipkart",  avatar:"👩‍💼",bg:"#E8F5E9",quote:"The AI improvement suggestions were gold. My resume ATS score jumped from 62% to 97%! Highly recommend."},
+  {name:"Rahul Verma",  role:"UX Designer @ Swiggy",        avatar:"🧑‍🎨",bg:"#F3E5F5",quote:"Clean, fast, and genuinely useful. The missing-skills breakdown showed me exactly what to add before applying."},
+  {name:"Ananya Iyer",  role:"Business Analyst @ Deloitte", avatar:"👩‍💼",bg:"#FFEBEE",quote:"I've tried other resume tools before but this one actually explains WHY a score is low. That made all the difference."},
+  {name:"Karthik Raj",  role:"DevOps Engineer @ Zoho",      avatar:"🧑‍💻",bg:"#E0F2F1",quote:"The job match feature alone is worth it. Pasted a JD and instantly saw my exact gaps — saved me hours of guessing."},
 ];
 
 function Testimonials() {
-  const [ref,visible]=useReveal();
+  const [ref, visible] = useReveal();
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  // How many cards show at once — 1 on mobile, 3 on wider screens.
+  // We keep this simple with a media query check via window width state.
+  const [cardsPerView, setCardsPerView] = useState(
+    window.innerWidth < 768 ? 1 : 3
+  );
+
+  useEffect(() => {
+    const handleResize = () => setCardsPerView(window.innerWidth < 768 ? 1 : 3);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const totalSlides = Math.ceil(TESTIMONIALS.length / cardsPerView);
+
+  // Auto-advance every 4 seconds, unless the user is hovering (paused)
+  useEffect(() => {
+    if (paused) return;
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % totalSlides);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [paused, totalSlides]);
+
+  const goTo = (index) => setCurrent(((index % totalSlides) + totalSlides) % totalSlides);
+  const goPrev = () => goTo(current - 1);
+  const goNext = () => goTo(current + 1);
+
+  // Slice out just the testimonials for the current slide
+  const visibleTestimonials = TESTIMONIALS.slice(
+    current * cardsPerView,
+    current * cardsPerView + cardsPerView
+  );
+
   return (
-    <section style={{padding:"80px 2rem",background:"#FFF8E1"}}>
+    <section
+      style={{padding:"80px 2rem",background:"#FFF8E1"}}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
       <div style={{textAlign:"center",marginBottom:"2.5rem"}}>
         <span style={{fontSize:"0.75rem",fontWeight:700,color:"#81C784",textTransform:"uppercase",letterSpacing:3}}>TESTIMONIALS</span>
         <h2 style={{fontSize:"clamp(1.8rem,4vw,2.4rem)",fontWeight:800,background:"linear-gradient(135deg,#2E7D32,#0277BD)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",marginTop:8}}>
           Happy Users, Happy Careers 🎉
         </h2>
       </div>
-      <div ref={ref} style={{maxWidth:1100,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:"1.5rem"}}>
-        {TESTIMONIALS.map((t,i)=>(
-          <div key={t.name}
-            style={{...T.card,background:t.bg,padding:"2rem",opacity:visible?1:0,animation:visible?`fadeUp 0.6s ease ${i*150}ms both`:"none",transition:"transform 0.3s,box-shadow 0.3s"}}
-            onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-6px)";e.currentTarget.style.boxShadow="0 20px 48px rgba(0,0,0,0.1)"}}
-            onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.boxShadow="0 8px 32px rgba(0,0,0,0.06)"}}>
-            <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:"1.2rem"}}>
-              <div style={{width:50,height:50,borderRadius:"50%",background:"rgba(255,255,255,0.85)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1.7rem",boxShadow:"0 4px 14px rgba(0,0,0,0.08)"}}>{t.avatar}</div>
-              <div>
-                <div style={{fontWeight:700,color:"#2D3748",fontSize:"0.95rem"}}>{t.name}</div>
-                <div style={{fontSize:"0.78rem",color:"#90A4AE"}}>{t.role}</div>
+
+      <div style={{maxWidth:1100,margin:"0 auto",position:"relative"}}>
+        {/* Prev / Next arrow buttons */}
+        <button
+          onClick={goPrev}
+          aria-label="Previous testimonial"
+          style={{position:"absolute",left:-16,top:"50%",transform:"translateY(-50%)",zIndex:2,width:40,height:40,borderRadius:"50%",border:"none",background:"white",boxShadow:"0 4px 14px rgba(0,0,0,0.12)",cursor:"pointer",fontSize:"1.1rem",display:"flex",alignItems:"center",justifyContent:"center"}}
+        >‹</button>
+        <button
+          onClick={goNext}
+          aria-label="Next testimonial"
+          style={{position:"absolute",right:-16,top:"50%",transform:"translateY(-50%)",zIndex:2,width:40,height:40,borderRadius:"50%",border:"none",background:"white",boxShadow:"0 4px 14px rgba(0,0,0,0.12)",cursor:"pointer",fontSize:"1.1rem",display:"flex",alignItems:"center",justifyContent:"center"}}
+        >›</button>
+
+        <div ref={ref} style={{display:"grid",gridTemplateColumns:`repeat(${cardsPerView},1fr)`,gap:"1.5rem"}}>
+          {visibleTestimonials.map((t, i) => (
+            <div key={t.name}
+              style={{...T.card,background:t.bg,padding:"2rem",opacity:visible?1:0,animation:visible?`fadeUp 0.6s ease ${i*150}ms both`:"none",transition:"transform 0.3s,box-shadow 0.3s"}}
+              onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-6px)";e.currentTarget.style.boxShadow="0 20px 48px rgba(0,0,0,0.1)"}}
+              onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.boxShadow="0 8px 32px rgba(0,0,0,0.06)"}}>
+              <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:"1.2rem"}}>
+                <div style={{width:50,height:50,borderRadius:"50%",background:"rgba(255,255,255,0.85)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1.7rem",boxShadow:"0 4px 14px rgba(0,0,0,0.08)"}}>{t.avatar}</div>
+                <div>
+                  <div style={{fontWeight:700,color:"#2D3748",fontSize:"0.95rem"}}>{t.name}</div>
+                  <div style={{fontSize:"0.78rem",color:"#90A4AE"}}>{t.role}</div>
+                </div>
               </div>
+              <div style={{color:"#FFA726",marginBottom:10,fontSize:"1rem"}}>★★★★★</div>
+              <p style={{color:"#546E7A",lineHeight:1.75,fontSize:"0.9rem",fontStyle:"italic"}}>"{t.quote}"</p>
             </div>
-            <div style={{color:"#FFA726",marginBottom:10,fontSize:"1rem"}}>★★★★★</div>
-            <p style={{color:"#546E7A",lineHeight:1.75,fontSize:"0.9rem",fontStyle:"italic"}}>"{t.quote}"</p>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        {/* Dot indicators */}
+        <div style={{display:"flex",justifyContent:"center",gap:8,marginTop:"2rem"}}>
+          {Array.from({length: totalSlides}).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goTo(i)}
+              aria-label={`Go to slide ${i+1}`}
+              style={{width:current===i?24:8,height:8,borderRadius:4,border:"none",background:current===i?"#FF7043":"#FFCC80",cursor:"pointer",transition:"all 0.3s"}}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -852,15 +923,11 @@ function UploadSection({ onUploadSuccess }) {
 
       {/* ── HEADING ── */}
       <div style={{textAlign:"center",marginBottom:"2.5rem",animation:"fadeUp 0.6s ease both"}}>
-        <span style={{fontSize:"0.75rem",fontWeight:700,color:"#FFA726",textTransform:"uppercase",letterSpacing:3,background:"rgba(255,167,38,0.1)",padding:"4px 14px",borderRadius:20,display:"inline-block",marginBottom:10}}>
-          DAY 3 — REAL BACKEND UPLOAD
-        </span>
+
         <h2 style={{fontSize:"clamp(1.8rem,4vw,2.5rem)",fontWeight:800,background:"linear-gradient(135deg,#E65100,#4FC3F7)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",marginTop:8}}>
           Upload Your Resume
         </h2>
-        <p style={{color:"#718096",marginTop:8}}>
-          Your file will be saved to the server ✅
-        </p>
+        
       </div>
 
       {/* ── CARD ── */}
@@ -946,6 +1013,78 @@ function UploadSection({ onUploadSuccess }) {
               ))}
             </div>
           </div>
+        )}
+
+        {/* ── STEP-BASED LOADING (NEW) ── */}
+        {uploading && (
+          <LoadingState
+            steps={["Uploading file", "Extracting text", "Running AI analysis"]}
+            currentStep={
+              progress < 35 ? 0 :
+              progress < 70 ? 1 : 2
+            }
+            theme="warm"
+          />
+        )}
+
+        {/* ── STEP-BASED LOADING (NEW) ── */}
+        {uploading && (
+          <LoadingState
+            steps={["Uploading file", "Extracting text", "Running AI analysis"]}
+            currentStep={
+              progress < 35 ? 0 :
+              progress < 70 ? 1 : 2
+            }
+            theme="warm"
+          />
+        )}
+
+        {/* ── STEP-BASED LOADING (NEW) ── */}
+        {uploading && (
+          <LoadingState
+            steps={["Uploading file", "Extracting text", "Running AI analysis"]}
+            currentStep={
+              progress < 35 ? 0 :
+              progress < 70 ? 1 : 2
+            }
+            theme="warm"
+          />
+        )}
+
+        {/* ── STEP-BASED LOADING (NEW) ── */}
+        {uploading && (
+          <LoadingState
+            steps={["Uploading file", "Extracting text", "Running AI analysis"]}
+            currentStep={
+              progress < 35 ? 0 :
+              progress < 70 ? 1 : 2
+            }
+            theme="warm"
+          />
+        )}
+
+        {/* ── STEP-BASED LOADING (NEW) ── */}
+        {uploading && (
+          <LoadingState
+            steps={["Uploading file", "Extracting text", "Running AI analysis"]}
+            currentStep={
+              progress < 35 ? 0 :
+              progress < 70 ? 1 : 2
+            }
+            theme="warm"
+          />
+        )}
+
+        {/* ── STEP-BASED LOADING (NEW) ── */}
+        {uploading && (
+          <LoadingState
+            steps={["Uploading file", "Extracting text", "Running AI analysis"]}
+            currentStep={
+              progress < 35 ? 0 :
+              progress < 70 ? 1 : 2
+            }
+            theme="warm"
+          />
         )}
 
         {/* ── PROGRESS BAR ── */}
@@ -1631,9 +1770,7 @@ function UploadedResumes({ refreshTrigger }) {
     }}>
 
       <div style={{textAlign:"center",marginBottom:"2.5rem",animation:"fadeUp 0.6s ease both"}}>
-        <span style={{fontSize:"0.75rem",fontWeight:700,color:"#4FC3F7",textTransform:"uppercase",letterSpacing:3,background:"rgba(79,195,247,0.1)",padding:"4px 14px",borderRadius:20,display:"inline-block",marginBottom:10}}>
-          DAY 6 — AI ANALYSIS
-        </span>
+        
         <h2 style={{fontSize:"clamp(1.8rem,4vw,2.5rem)",fontWeight:800,background:"linear-gradient(135deg,#0277BD,#FFA726)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",marginTop:8}}>
           Uploaded Resumes
         </h2>
@@ -1836,15 +1973,69 @@ function CTABanner() {
 // ============================================================
 // FOOTER
 // ============================================================
+function NewsletterForm() {
+  const { showToast } = useToast();
+  const [email, setEmail] = useState('');
+
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    if (!email.trim() || !email.includes('@')) {
+      showToast('Please enter a valid email address.', 'error');
+      return;
+    }
+    showToast("You're subscribed! 📬", 'success');
+    setEmail('');
+  };
+
+  return (
+    <form onSubmit={handleSubscribe} style={{display:"flex",gap:8}}>
+      <input
+        type="email"
+        value={email}
+        onChange={(e)=>setEmail(e.target.value)}
+        placeholder="Your email"
+        style={{
+          flex:1, padding:"9px 12px", borderRadius:10,
+          border:"1px solid rgba(255,255,255,0.18)",
+          background:"rgba(255,255,255,0.06)",
+          color:"#fff", fontSize:"0.82rem", fontFamily:"Poppins",
+          outline:"none",
+        }}
+      />
+      <button type="submit" style={{
+        background:"linear-gradient(135deg,#FFA726,#FF7043)",
+        color:"#fff", border:"none", padding:"9px 18px",
+        borderRadius:10, fontWeight:700, fontSize:"0.8rem",
+        cursor:"pointer", fontFamily:"Poppins", whiteSpace:"nowrap",
+      }}>
+        Subscribe
+      </button>
+    </form>
+  );
+}
+
 function Footer() {
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setShowBackToTop(window.scrollY > 300);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // ...the rest of your existing Footer code continues here unchanged
   const linkStyle = {color:"#90A4AE",textDecoration:"none",fontSize:"0.88rem",transition:"color 0.2s",cursor:"pointer"};
   return (
     <footer id="contact" style={{background:"#1A237E",padding:"60px 2rem 28px",color:"#B0BEC5"}}>
       <div className="footer-grid" style={{maxWidth:1100,margin:"0 auto",display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr",gap:"2.5rem",marginBottom:"3rem"}}>
         {/* Brand */}
         <div>
-          <div style={{fontSize:"1.7rem",fontWeight:900,background:"linear-gradient(135deg,#FFD54F,#4FC3F7)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",marginBottom:14}}>✦ ResumeAI</div>
-          <p style={{lineHeight:1.8,fontSize:"0.88rem",maxWidth:250}}>AI-powered resume analysis helping job seekers land their dream roles faster.</p>
+          <div style={{fontSize:"1.7rem",fontWeight:900,background:"linear-gradient(135deg,#FFD54F,#4FC3F7)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",marginBottom:14}}>✦ DOSS&CO Resume Analysis</div>
+          <p style={{lineHeight:1.8,fontSize:"0.88rem",maxWidth:250,marginBottom:18}}>AI-powered resume analysis helping job seekers land their dream roles faster.</p>
+
+          {/* Newsletter signup */}
+          <NewsletterForm />
+
           <div style={{display:"flex",gap:10,marginTop:18}}>
             {["𝕏","in","🐙","📘"].map((s,i)=>(
               <div key={i} style={{width:40,height:40,borderRadius:"50%",background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.14)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1.1rem",cursor:"pointer",transition:"all 0.2s"}}
@@ -1885,8 +2076,28 @@ function Footer() {
         </div>
       </div>
       <div style={{borderTop:"1px solid rgba(255,255,255,0.08)",paddingTop:22,textAlign:"center",fontSize:"0.82rem",color:"#546E7A"}}>
-        © 2025 ResumeAI • Made with ❤️ & 🤖 AI • All rights reserved.
+        © 2025 ✦ DOSS&CO Resume Analysis • Made with ❤️ & 🤖 AI • All rights reserved.
       </div>
+
+      {/* Back to Top button */}
+{showBackToTop && (
+  <button
+    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+    style={{
+      position:"fixed", bottom:28, right:28, zIndex:500,
+      width:48, height:48, borderRadius:"50%",
+      background:"linear-gradient(135deg,#FFA726,#FF7043)",
+      color:"#fff", border:"none", cursor:"pointer",
+      fontSize:"1.3rem", boxShadow:"0 6px 20px rgba(255,112,67,0.4)",
+      transition:"transform 0.2s",
+    }}
+    onMouseEnter={e=>e.target.style.transform="translateY(-4px)"}
+    onMouseLeave={e=>e.target.style.transform="translateY(0)"}
+    title="Back to top"
+  >
+    ↑
+  </button>
+)}
     </footer>
   );
 }
