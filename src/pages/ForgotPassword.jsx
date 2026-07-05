@@ -89,7 +89,7 @@ export default function ForgotPassword() {
           />
         </div>
 
-        
+        {error && <p className="error-text">⚠️ {error}</p>}
 
         <button className="auth-btn" type="submit" disabled={loading}>
           {loading ? 'Sending...' : 'Send Reset Link'}
