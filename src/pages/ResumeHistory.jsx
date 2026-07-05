@@ -10,7 +10,16 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './ResumeHistory.css';
 import { useToast } from '../ToastContext';
+import BackBar from '../components/BackBar';
 
+export default function ResumeHistory() {
+  return (
+    <div>
+      <BackBar title="Resume Version History" />
+      {/* rest of your existing ResumeHistory JSX */}
+    </div>
+  );
+}
 function getScore(resume) {
   return resume?.aiAnalysis?.resumeScore ?? null;
 }

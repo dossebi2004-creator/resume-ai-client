@@ -7,7 +7,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import './AdminDashboard.css';
+import BackBar from '../components/BackBar';
 
+export default function AdminDashboard() {
+  return (
+    <div>
+      <BackBar title="Admin Dashboard" />
+      {/* rest of your existing AdminDashboard JSX */}
+    </div>
+  );
+}
 const API_BASE = `${process.env.REACT_APP_API_URL}/api/admin`;
 
 // Helper: builds the standard Authorization header using the saved token

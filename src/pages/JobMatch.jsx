@@ -2,7 +2,19 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import './JobMatch.css';
 import { useToast } from '../ToastContext';
+import BackBar from '../components/BackBar';
+// ...existing imports
 
+export default function JobMatch() {
+  // ...existing state/logic
+
+  return (
+    <div>
+      <BackBar title="Job Match Analyzer" />
+      {/* rest of your existing JobMatch JSX */}
+    </div>
+  );
+}
 function ScoreRing({ score, label }) {
   const radius = 54;
   const circumference = 2 * Math.PI * radius;
