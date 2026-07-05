@@ -234,6 +234,9 @@ export default function JobMatch({ resumeId: resumeIdProp }) {
           <p>AI is comparing your resume with the job description...</p>
         </div>
       )}
+      {error && !loading && (
+        <div className="error-box">⚠️ {error}</div>
+      )}
 
       
 

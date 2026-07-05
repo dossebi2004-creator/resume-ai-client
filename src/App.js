@@ -985,7 +985,18 @@ function UploadSection({ onUploadSuccess }) {
           )}
         </div>
 
-        
+        {error && (
+          <div style={{
+            background: "#FFEBEE", color: "#C62828",
+            border: "1px solid rgba(239,83,80,0.3)",
+            borderRadius: 12, padding: "0.9rem 1.2rem",
+            fontWeight: 600, fontSize: "0.88rem",
+            textAlign: "center",
+          }}>
+            {error}
+          </div>
+        )}
+
         {/* ── SUCCESS MESSAGE ── */}
         {success && serverData && (
           <div style={{background:"#E8F5E9",border:"1px solid rgba(129,199,132,0.4)",borderRadius:14,padding:"1.2rem 1.4rem",animation:"bounceIn 0.5s ease both"}}>
