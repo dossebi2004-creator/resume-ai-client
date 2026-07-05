@@ -12,14 +12,7 @@ import './ResumeHistory.css';
 import { useToast } from '../ToastContext';
 import BackBar from '../components/BackBar';
 
-export default function ResumeHistory() {
-  return (
-    <div>
-      <BackBar title="Resume Version History" />
-      {/* rest of your existing ResumeHistory JSX */}
-    </div>
-  );
-}
+
 function getScore(resume) {
   return resume?.aiAnalysis?.resumeScore ?? null;
 }
@@ -137,6 +130,7 @@ export default function ResumeHistory() {
 
   return (
     <div className="history-page page-fade-in">
+      <BackBar title="Job Match Analyzer" />
       <h1 className="history-title">📈 Resume Version History</h1>
       <p className="history-subtitle">
         Track how your resume has improved across every version you've uploaded.

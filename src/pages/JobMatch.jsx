@@ -5,16 +5,7 @@ import { useToast } from '../ToastContext';
 import BackBar from '../components/BackBar';
 // ...existing imports
 
-export default function JobMatch() {
-  // ...existing state/logic
 
-  return (
-    <div>
-      <BackBar title="Job Match Analyzer" />
-      {/* rest of your existing JobMatch JSX */}
-    </div>
-  );
-}
 function ScoreRing({ score, label }) {
   const radius = 54;
   const circumference = 2 * Math.PI * radius;
@@ -191,6 +182,7 @@ export default function JobMatch({ resumeId: resumeIdProp }) {
 
   return (
     <div className="jobmatch-page page-fade-in">
+      <BackBar title="Job Match Analyzer" />
       <h1 className="jobmatch-title">🎯 Job Match Analyzer</h1>
       <p className="jobmatch-subtitle">Paste a job description below to see how well your resume matches it.</p>
 

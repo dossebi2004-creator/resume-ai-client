@@ -9,14 +9,7 @@ import axios from 'axios';
 import './AdminDashboard.css';
 import BackBar from '../components/BackBar';
 
-export default function AdminDashboard() {
-  return (
-    <div>
-      <BackBar title="Admin Dashboard" />
-      {/* rest of your existing AdminDashboard JSX */}
-    </div>
-  );
-}
+
 const API_BASE = `${process.env.REACT_APP_API_URL}/api/admin`;
 
 // Helper: builds the standard Authorization header using the saved token
@@ -36,7 +29,9 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'users' | 'resumes'
 
   return (
+    
     <div className="admin-page page-fade-in">
+      <BackBar title="Job Match Analyzer" />
       <h1 className="admin-title">🛠️ Admin Dashboard</h1>
 
       <div className="admin-tabs">
