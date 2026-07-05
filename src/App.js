@@ -2040,6 +2040,165 @@ function Footer() {
 // =========================================================================
 // HOMEPAGE — your existing landing page, now its own component
 // =========================================================================
+// ============================================================
+// ============================================================
+// ABOUT / TEAM SECTION — carousel style (matches Testimonials)
+// ============================================================
+const TEAM = [
+  { name: "Doss Ebinesan A",     role: "Project Lead & Full-Stack Developer", avatar: "👑", lead: true },
+  { name: "Eshwar Jagan M",      role: "Backend Developer",                   avatar: "🧑‍💻" },
+  { name: "Sivavishnu P",        role: "Frontend Developer",                  avatar: "🎨" },
+  { name: "Nesaprasath T",       role: "AI/ML Integration Engineer",          avatar: "🤖" },
+  { name: "Vijay Venkat Raj R",  role: "UI/UX Designer",                      avatar: "✨" },
+  { name: "Parthasarathy P",     role: "Database & API Engineer",             avatar: "🗄️" },
+  { name: "Manasseh V",          role: "Quality Assurance & Testing",         avatar: "🧪" },
+  { name: "Arul Prasath P",      role: "Documentation & Deployment",          avatar: "📦" },
+];
+
+function TeamCard({ member, delay }) {
+  return (
+    <div style={{
+      ...T.card,
+      padding: member.lead ? "2.4rem 2rem" : "1.8rem 1.4rem",
+      textAlign: "center",
+      border: member.lead ? "2px solid #FFA726" : "1px solid rgba(255,255,255,0.8)",
+      background: member.lead
+        ? "linear-gradient(135deg,#FFF3E0,#FFF8E1)"
+        : "rgba(255,255,255,0.82)",
+      position: "relative",
+      transform: member.lead ? "scale(1.04)" : "scale(1)",
+      animation: `fadeUp 0.6s ease ${delay}ms both`,
+      transition: "transform 0.3s, box-shadow 0.3s",
+    }}
+      onMouseEnter={e=>{e.currentTarget.style.transform=(member.lead?"scale(1.07)":"scale(1.03)")+" translateY(-4px)";}}
+      onMouseLeave={e=>{e.currentTarget.style.transform=member.lead?"scale(1.04)":"scale(1)";}}>
+      {member.lead && (
+        <div style={{
+          position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)",
+          background: "linear-gradient(135deg,#FFA726,#FF7043)", color: "#fff",
+          fontSize: "0.68rem", fontWeight: 800, letterSpacing: 1,
+          padding: "4px 14px", borderRadius: 20,
+          boxShadow: "0 4px 12px rgba(255,112,67,0.4)",
+          whiteSpace: "nowrap",
+        }}>
+          PROJECT LEAD
+        </div>
+      )}
+      <div style={{
+        width: member.lead ? 76 : 60, height: member.lead ? 76 : 60,
+        margin: "0 auto 14px", borderRadius: "50%",
+        background: member.lead
+          ? "linear-gradient(135deg,#FFD54F,#FFA726)"
+          : "linear-gradient(135deg,#E1F5FE,#B3E5FC)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: member.lead ? "2.1rem" : "1.6rem",
+        boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
+      }}>
+        {member.avatar}
+      </div>
+      <h4 style={{
+        fontSize: member.lead ? "1.15rem" : "1rem",
+        fontWeight: 800, color: "#2D3748", marginBottom: 6,
+      }}>
+        {member.name}
+      </h4>
+      <p style={{
+        fontSize: member.lead ? "0.88rem" : "0.8rem",
+        fontWeight: 600,
+        color: member.lead ? "#E65100" : "#0288D1",
+      }}>
+        {member.role}
+      </p>
+    </div>
+  );
+}
+
+function AboutSection() {
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  const [cardsPerView, setCardsPerView] = useState(
+    window.innerWidth < 768 ? 1 : 3
+  );
+
+  useEffect(() => {
+    const handleResize = () => setCardsPerView(window.innerWidth < 768 ? 1 : 3);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const totalSlides = Math.ceil(TEAM.length / cardsPerView);
+
+  // Auto-advance every 4 seconds, unless hovering
+  useEffect(() => {
+    if (paused) return;
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % totalSlides);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [paused, totalSlides]);
+
+  const goTo = (index) => setCurrent(((index % totalSlides) + totalSlides) % totalSlides);
+  const goPrev = () => goTo(current - 1);
+  const goNext = () => goTo(current + 1);
+
+  const visibleTeam = TEAM.slice(
+    current * cardsPerView,
+    current * cardsPerView + cardsPerView
+  );
+
+  return (
+    <section
+      id="about"
+      style={{ padding: "80px 2rem", background: "linear-gradient(180deg,#FFF8E1 0%,#F3E5F5 100%)" }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+        <span style={{fontSize:"0.75rem",fontWeight:700,color:"#FF7043",textTransform:"uppercase",letterSpacing:3}}>ABOUT US</span>
+        <h2 style={{fontSize:"clamp(1.8rem,4vw,2.5rem)",fontWeight:800,background:"linear-gradient(135deg,#4FC3F7,#FFA726)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",marginTop:8,marginBottom:20}}>
+          About DOSS&CO Resume Analysis
+        </h2>
+        <p style={{maxWidth:640,margin:"0 auto",color:"#546E7A",lineHeight:1.8,fontSize:"1rem"}}>
+          DOSS&CO Resume Analysis is an AI-powered platform built to help job seekers understand
+          and improve their resumes. By combining skill extraction, ATS scoring, and job-description
+          matching, we give candidates clear, actionable feedback — turning guesswork into
+          data-driven career decisions.
+        </p>
+      </div>
+
+      <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative" }}>
+        <button
+          onClick={goPrev}
+          aria-label="Previous team member"
+          style={{position:"absolute",left:-16,top:"50%",transform:"translateY(-50%)",zIndex:2,width:40,height:40,borderRadius:"50%",border:"none",background:"white",boxShadow:"0 4px 14px rgba(0,0,0,0.12)",cursor:"pointer",fontSize:"1.1rem",display:"flex",alignItems:"center",justifyContent:"center"}}
+        >‹</button>
+        <button
+          onClick={goNext}
+          aria-label="Next team member"
+          style={{position:"absolute",right:-16,top:"50%",transform:"translateY(-50%)",zIndex:2,width:40,height:40,borderRadius:"50%",border:"none",background:"white",boxShadow:"0 4px 14px rgba(0,0,0,0.12)",cursor:"pointer",fontSize:"1.1rem",display:"flex",alignItems:"center",justifyContent:"center"}}
+        >›</button>
+
+        <div style={{display:"grid",gridTemplateColumns:`repeat(${cardsPerView},1fr)`,gap:"1.5rem"}}>
+          {visibleTeam.map((m, i) => (
+            <TeamCard key={m.name} member={m} delay={i * 150} />
+          ))}
+        </div>
+
+        <div style={{display:"flex",justifyContent:"center",gap:8,marginTop:"2rem"}}>
+          {Array.from({length: totalSlides}).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goTo(i)}
+              aria-label={`Go to slide ${i+1}`}
+              style={{width:current===i?24:8,height:8,borderRadius:4,border:"none",background:current===i?"#FF7043":"#FFCC80",cursor:"pointer",transition:"all 0.3s"}}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 function HomePage() {
   // Bumping this number tells UploadedResumes to refetch the list
   const [refreshKey, setRefreshKey] = useState(0);
@@ -2049,11 +2208,13 @@ function HomePage() {
       <Navbar />         {/* Fixed top navigation */}
       <Hero />            {/* Landing hero with illustration */}
       <Features />        {/* 4 feature cards */}
+      
       <Statistics />      {/* Animated counters */}
       <UploadSection onUploadSuccess={() => setRefreshKey(k => k + 1)} />
       <UploadedResumes refreshTrigger={refreshKey} /> {/* Day 2 — Upload + Validation */}
       <Testimonials />    {/* 3 user testimonials */}
       <FAQSection />      {/* NEW: Frequently Asked Questions */}
+      <AboutSection />
       <CTABanner />       {/* Call to action */}
       <Footer />          {/* Footer with links */}
     </div>
